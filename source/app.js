@@ -12,6 +12,8 @@ import {TimelineMax, CSSPlugin, TweenMax, EasePack} from 'gsap'; // eslint-disab
 
 import './stylesheets/aplication.styl';
 
+import {getRandomNumber} from 'helpers/randomHelper';
+
 const VueTouch = require('vue-touch');
 
 const __svg__ = {path: './assets/images/sprite/*.svg', name: '[hash].logos.svg'}; // eslint-disable-line
@@ -50,12 +52,17 @@ if (NODE_ENV === 'development') {
       next(request.respondWith({status: 404, statusText: 'Not found!'}));
     } else {
       const response = typeof route.response === 'function' ? route.response(request) : route.response;
-      next(
-        request.respondWith(
-          response,
-          {status: 200}
-        )
-      );
+
+      // Эмулируем время ответа
+      setTimeout(() => {
+        console.log(response);
+        next(
+          request.respondWith(
+            response,
+            {status: 200}
+          )
+        );
+      }, getRandomNumber(10, 400));
     }
   });
 }

@@ -17,6 +17,8 @@ const cssnano = require('cssnano');
 const mqpacker = require('css-mqpacker');
 const sortCSSmq = require('sort-css-media-queries');
 
+const stylusLoader = 'css!postcss!stylus?resolve url';
+
 module.exports = {
   context: path.resolve(__dirname, 'source'), // указываем относительно какой папки будет идти сборка (контекст запуска)
 
@@ -131,9 +133,10 @@ module.exports = {
           path.join(__dirname, './source')
         ],
         loader: 'babel',
-        query: {
-          presets: ['es2015']
-        }
+      },
+      {
+        test: /\.json$/,
+        loader: 'json'
       },
       {
         test: /\.(png|jpg|gif|svg|woff|woff2|webm|mp4|ogv)$/,
@@ -156,7 +159,7 @@ module.exports = {
       },
       {
         test: /\.styl$/,
-        loader: ExtractTextPlugin.extract('css!postcss!stylus?resolve url')
+        loader: NODE_ENV === 'development' ? `style!${stylusLoader}` : ExtractTextPlugin.extract(stylusLoader)
       }
     ]
   },
@@ -171,7 +174,7 @@ module.exports = {
     loaders: {
       js: 'babel?presets[]=es2015',
       css: ExtractTextPlugin.extract('css!postcss'),
-      stylus: ExtractTextPlugin.extract('css!postcss!stylus?resolve url')
+      stylus: NODE_ENV === 'development' ? `style!${stylusLoader}` : ExtractTextPlugin.extract(stylusLoader)
     }
   },
 
